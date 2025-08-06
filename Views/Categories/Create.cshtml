@@ -1,0 +1,126 @@
+@model FinanceApp.Models.Category
+@{
+    ViewData["Title"] = "Add Category";
+}
+
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="page-heading">
+            <i class="bi bi-plus-circle me-2 text-primary"></i>Add New Category
+        </h1>
+        <p class="page-description">Create a new category to organize your expenses</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+
+        <div class="card bg-dark text-white">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0 text-white">
+                    <i class="bi bi-tag me-2"></i>Category Details
+                </h5>
+            </div>
+            <div class="card-body bg-dark text-white">
+                <form asp-action="Create" method="post">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="Name" class="form-label text-white">
+                                <i class="bi bi-text-paragraph me-1"></i>Category Name
+                            </label>
+                            <input asp-for="Name" class="form-control bg-dark text-white" placeholder="Enter category name..." />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label text-white">
+                                <i class="bi bi-text-paragraph me-1"></i>Description (Optional)
+                            </label>
+                            <textarea asp-for="Description" class="form-control bg-dark text-white" rows="3" 
+                                      placeholder="Enter a description for this category..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Color" class="form-label text-white">
+                                <i class="bi bi-palette me-1"></i>Color
+                            </label>
+                            <div class="d-flex align-items-center gap-3">
+                                <input asp-for="Color" class="form-control form-control-color bg-dark text-white" type="color" style="width: 60px; height: 40px;" />
+                                <span class="text-white">Choose a color to represent this category</span>
+                            </div>
+                            <span asp-validation-for="Color" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12 mt-4">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-2"></i>Create Category
+                                </button>
+                                <a asp-action="Index" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to List
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Color Suggestions -->
+        <div class="card mt-4 bg-dark text-white">
+            <div class="card-header bg-dark text-white">
+                <h6 class="mb-0 text-white">
+                    <i class="bi bi-lightbulb me-2"></i>Color Suggestions
+                </h6>
+            </div>
+            <div class="card-body bg-dark text-white">
+                <div class="row g-2">
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-sm text-white" style="background-color: #EF4444;" onclick="setColor('#EF4444')">Red</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-sm text-white" style="background-color: #F59E0B;" onclick="setColor('#F59E0B')">Orange</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-sm text-white" style="background-color: #10B981;" onclick="setColor('#10B981')">Green</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-sm text-white" style="background-color: #3B82F6;" onclick="setColor('#3B82F6')">Blue</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-sm text-white" style="background-color: #8B5CF6;" onclick="setColor('#8B5CF6')">Purple</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-sm text-white" style="background-color: #EC4899;" onclick="setColor('#EC4899')">Pink</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-sm text-white" style="background-color: #06B6D4;" onclick="setColor('#06B6D4')">Cyan</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-sm text-white" style="background-color: #6B7280;" onclick="setColor('#6B7280')">Gray</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        function setColor(color) {
+            document.getElementById('Color').value = color;
+        }
+        
+        // Set default color
+        document.addEventListener('DOMContentLoaded', function() {
+            const colorInput = document.getElementById('Color');
+            if (!colorInput.value) {
+                colorInput.value = '#3B82F6'; // Default blue
+            }
+        });
+    </script>
+} 

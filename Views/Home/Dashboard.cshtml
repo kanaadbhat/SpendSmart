@@ -1,0 +1,196 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="page-heading">
+            <i class="bi bi-speedometer2 me-2 text-primary"></i>Dashboard
+        </h1>
+        <p class="page-description">Welcome to your financial overview</p>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="stats-card">
+            <div class="stats-number">$@ViewBag.TotalExpensesThisMonth.ToString("N2")</div>
+            <div class="stats-label">Total Expenses This Month</div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="stats-card">
+            <div class="stats-number">@ViewBag.RecentExpenses.Count</div>
+            <div class="stats-label">Recent Transactions</div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="stats-card">
+            <div class="stats-number">@ViewBag.ChartData.Count</div>
+            <div class="stats-label">Active Categories</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Chart Section -->
+    <div class="col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-pie-chart me-2"></i>Expenses by Category
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="position: relative; height: 400px;">
+                    <canvas id="expensesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Expenses -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-clock-history me-2"></i>Recent Expenses
+                </h5>
+                <a asp-controller="Expenses" asp-action="Index" class="btn btn-sm btn-primary">
+                    View All
+                </a>
+            </div>
+            <div class="card-body p-0">
+                @if (ViewBag.RecentExpenses.Count > 0)
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var expense in ViewBag.RecentExpenses)
+                        {
+                            <div class="list-group-item bg-transparent border-0 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-medium text-white">@expense.Description</div>
+                                    <small class="text-muted">@expense.Date.ToString("MMM dd, yyyy")</small>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold text-primary">$@expense.Amount.ToString("N2")</div>
+                                    @if (expense.Category != null)
+                                    {
+                                        <span class="category-badge" style="background-color: @expense.Category.Color;">
+                                            @expense.Category.Name
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2">No expenses yet</p>
+                        <a asp-controller="Expenses" asp-action="Create" class="btn btn-primary btn-sm">
+                            Add Your First Expense
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@* <!-- Quick Actions -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-lightning me-2"></i>Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3 col-sm-6">
+                        <a asp-controller="Expenses" asp-action="Create" class="btn btn-primary w-100">
+                            <i class="bi bi-plus-circle me-2"></i>Add Expense
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <a asp-controller="Expenses" asp-action="Index" class="btn btn-secondary w-100">
+                            <i class="bi bi-list-ul me-2"></i>View All Expenses
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <a asp-controller="Categories" asp-action="Index" class="btn btn-secondary w-100">
+                            <i class="bi bi-tags me-2"></i>Manage Categories
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary w-100">
+                            <i class="bi bi-house me-2"></i>Go Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> *@
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Chart configuration
+        const ctx = document.getElementById('expensesChart').getContext('2d');
+        
+        const chartData = @Html.Raw(Json.Serialize(ViewBag.ChartData));
+        
+        const labels = chartData.map(item => item.categoryName);
+        const data = chartData.map(item => item.total);
+        const colors = chartData.map(item => item.categoryColor);
+        
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: colors,
+                    borderWidth: 2,
+                    borderColor: '#1e293b'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#f8fafc',
+                            padding: 20,
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleColor: '#f8fafc',
+                        bodyColor: '#cbd5e1',
+                        borderColor: '#334155',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed;
+                                return label + ': $' + value.toFixed(2);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+} 

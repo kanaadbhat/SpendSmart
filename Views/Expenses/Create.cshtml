@@ -1,0 +1,100 @@
+﻿@model FinanceApp.Models.Expense
+@{
+    ViewData["Title"] = "Add Expense";
+}
+
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="page-heading">
+            <i class="bi bi-plus-circle me-2 text-primary"></i>Add New Expense
+        </h1>
+        <p class="page-description">Track your spending by adding a new expense</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+
+        <div class="card bg-dark text-white">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0 text-white">
+                    <i class="bi bi-receipt me-2"></i>Expense Details
+                </h5>
+            </div>
+            <div class="card-body bg-dark text-white">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label text-white">
+                                <i class="bi bi-text-paragraph me-1"></i>Description
+                            </label>
+                            <input asp-for="Description" class="form-control bg-dark text-white" placeholder="Enter expense description..." />
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Amount" class="form-label text-white">
+                                <i class="bi bi-currency-dollar me-1"></i>Amount
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark text-white">$</span>
+                                <input asp-for="Amount" class="form-control bg-dark text-white" type="number" step="0.01" min="0.01" placeholder="0.00" />
+                            </div>
+                            <span asp-validation-for="Amount" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="CategoryId" class="form-label text-white">
+                                <i class="bi bi-tags me-1"></i>Category
+                            </label>
+                            <select asp-for="CategoryId" class="form-select bg-dark text-white" asp-items="@(new SelectList(ViewBag.Categories, "Id", "Name"))">
+                                <option value="">Select a category...</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Date" class="form-label text-white">
+                                <i class="bi bi-calendar me-1"></i>Date
+                            </label>
+                            <input asp-for="Date" class="form-control bg-dark text-white" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="Date" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12 mt-4">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-2"></i>Save Expense
+                                </button>
+                                <a asp-action="Index" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to List
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Quick Add Categories -->
+        @if (ViewBag.Categories.Count == 0)
+        {
+            <div class="card mt-4">
+                <div class="card-body text-center">
+                    <i class="bi bi-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3">No Categories Available</h5>
+                    <p class="text-muted">You need to create categories before adding expenses.</p>
+                    <a asp-controller="Categories" asp-action="Create" class="btn btn-warning">
+                        <i class="bi bi-plus-circle me-2"></i>Create First Category
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

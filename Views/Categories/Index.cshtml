@@ -1,0 +1,110 @@
+@model IEnumerable<FinanceApp.Models.Category>
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-heading">
+                <i class="bi bi-tags me-2 text-primary"></i>Categories
+            </h1>
+            <p class="page-description">Manage your expense categories</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Add New Category
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">
+            <i class="bi bi-list me-2"></i>Category List
+            <span class="badge bg-primary ms-2">@Model.Count() categories</span>
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Color</th>
+                            <th>Expenses Count</th>
+                            <th>Created</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="category-color-indicator me-2" style="background-color: @item.Color;"></div>
+                                        <span class="fw-medium">@item.Name</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="text-muted">@(item.Description ?? "No description")</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="color-preview me-2" style="background-color: @item.Color; width: 20px; height: 20px; border-radius: 4px;"></div>
+                                        <span class="text-muted">@item.Color</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">@item.Expenses.Count</span>
+                                </td>
+                                <td>
+                                    <span class="text-muted">@item.CreatedAt.ToString("MMM dd, yyyy")</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-outline-primary" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-outline-danger" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-tags text-muted" style="font-size: 4rem;"></i>
+                <h4 class="text-muted mt-3">No categories found</h4>
+                <p class="text-muted">Create your first category to start organizing your expenses.</p>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Create First Category
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+.category-color-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.color-preview {
+    border: 1px solid var(--border-color);
+}
+</style> 

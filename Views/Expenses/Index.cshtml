@@ -1,0 +1,187 @@
+﻿@model IEnumerable<FinanceApp.Models.Expense>
+@{
+    ViewData["Title"] = "All Expenses";
+}
+
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-heading">
+                <i class="bi bi-list-ul me-2 text-primary"></i>All Expenses
+            </h1>
+            <p class="page-description">Manage and track your expenses</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Add New Expense
+        </a>
+    </div>
+</div>
+
+<!-- Search and Filter Section -->
+<div class="search-filter-section">
+    <form method="get" class="row g-3">
+        <div class="col-md-4">
+            <label for="searchTerm" class="form-label">Search Description</label>
+            <input type="text" class="form-control" id="searchTerm" name="searchTerm" 
+                   value="@ViewBag.SearchTerm" placeholder="Search expenses...">
+        </div>
+        <div class="col-md-2">
+            <label for="startDate" class="form-label">Start Date</label>
+            <input type="date" class="form-control" id="startDate" name="startDate" 
+                   value="@(ViewBag.StartDate?.ToString("yyyy-MM-dd"))">
+        </div>
+        <div class="col-md-2">
+            <label for="endDate" class="form-label">End Date</label>
+            <input type="date" class="form-control" id="endDate" name="endDate" 
+                   value="@(ViewBag.EndDate?.ToString("yyyy-MM-dd"))">
+        </div>
+        <div class="col-md-2">
+            <label for="categoryId" class="form-label">Category</label>
+            <select class="form-select" id="categoryId" name="categoryId">
+                <option value="">All Categories</option>
+                @foreach (var category in ViewBag.Categories)
+                {
+                    <option value="@category.Id" selected="@(ViewBag.CategoryId == category.Id)">
+                        @category.Name
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <div class="d-flex gap-2 w-100">
+                <button type="submit" class="btn btn-primary flex-fill">
+                    <i class="bi bi-search me-1"></i>Search
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Expenses Table -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">
+            <i class="bi bi-table me-2"></i>Expenses List
+            <span class="badge bg-primary ms-2">@Model.Count() items</span>
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-medium">@item.Description</div>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-primary">$@item.Amount.ToString("N2")</span>
+                                </td>
+                                <td>
+                                    @if (item.Category != null)
+                                    {
+                                        <span class="category-badge" style="background-color: @item.Category.Color;">
+                                            @item.Category.Name
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No category</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="text-muted">@item.Date.ToString("MMM dd, yyyy")</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-outline-primary" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-outline-danger" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+                <h4 class="text-muted mt-3">No expenses found</h4>
+                <p class="text-muted">Try adjusting your search criteria or add your first expense.</p>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Add Your First Expense
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Summary Section -->
+@if (Model.Any())
+{
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Total Amount</h6>
+                    <h3 class="text-primary mb-0">$@Model.Sum(e => e.Amount).ToString("N2")</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Average Amount</h6>
+                    <h3 class="text-success mb-0">$@(Model.Average(e => e.Amount).ToString("N2"))</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+.btn-group .btn {
+    border-radius: 0.375rem !important;
+}
+
+.btn-group .btn:first-child {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.btn-group .btn:last-child {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: var(--bg-tertiary);
+}
+</style>

@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="hero-section text-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4 fade-in">
+                    Take Control of Your Finances
+                </h1>
+                <p class="lead mb-5 fade-in" style="animation-delay: 0.2s;">
+                    Track your expenses, manage categories, and gain insights into your spending habits with our modern finance tracker.
+                </p>
+                <div class="hero-buttons fade-in" style="animation-delay: 0.4s;">
+                    <a asp-controller="Home" asp-action="Dashboard" class="btn btn-primary btn-lg me-3">
+                        <i class="bi bi-speedometer2 me-2"></i>Get Started
+                    </a>
+                    <a asp-controller="Expenses" asp-action="Create" class="btn btn-secondary btn-lg">
+                        <i class="bi bi-plus-circle me-2"></i>Add Expense
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="features-section py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-graph-up text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title text-white">Track Expenses</h5>
+                        <p class="card-text">Easily add and categorize your expenses with our intuitive interface.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-pie-chart text-success" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title text-white">Visual Insights</h5>
+                        <p class="card-text">Get clear visual representations of your spending patterns and trends.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-tags text-warning" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title text-white">Manage Categories</h5>
+                        <p class="card-text">Organize your expenses with customizable categories and colors.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    border-radius: 2rem;
+    margin: 2rem 0;
+    box-shadow: var(--shadow-xl);
+}
+
+.feature-icon {
+    transition: transform 0.3s ease;
+}
+
+.card:hover .feature-icon {
+    transform: scale(1.1);
+}
+
+.hero-buttons .btn {
+    min-width: 160px;
+}
+
+@@media (max-width: 768px) {
+    .hero-buttons .btn {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-buttons .btn:last-child {
+        margin-bottom: 0;
+    }
+}
+</style>
