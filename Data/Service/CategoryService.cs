@@ -16,6 +16,7 @@ namespace FinanceApp.Data.Service
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
             return await _context.Categories
+                .Include(c => c.Expenses)
                 .OrderBy(c => c.Name)
                 .ToListAsync();
         }

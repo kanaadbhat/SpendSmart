@@ -33,18 +33,43 @@
     </div>
 </div>
 
+
 <div class="row">
     <!-- Chart Section -->
     <div class="col-lg-8 mb-4">
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-header">
                 <h5 class="mb-0">
                     <i class="bi bi-pie-chart me-2"></i>Expenses by Category
                 </h5>
             </div>
             <div class="card-body">
-                <div class="chart-container" style="position: relative; height: 400px;">
+                <div class="chart-container" style="position: relative; height: 350px;">
                     <canvas id="expensesChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-bar-chart me-2"></i>Expenses by Month
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="position: relative; height: 350px;">
+                    <canvas id="expensesByMonthChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-graph-up-arrow me-2"></i>Monthly Trend
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="position: relative; height: 350px;">
+                    <canvas id="monthlyTrendChart"></canvas>
                 </div>
             </div>
         </div>
@@ -140,15 +165,12 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Chart configuration
+        // Expenses by Category (existing)
         const ctx = document.getElementById('expensesChart').getContext('2d');
-        
         const chartData = @Html.Raw(Json.Serialize(ViewBag.ChartData));
-        
         const labels = chartData.map(item => item.categoryName);
         const data = chartData.map(item => item.total);
         const colors = chartData.map(item => item.categoryColor);
-        
         new Chart(ctx, {
             type: 'doughnut',
             data: {
@@ -188,6 +210,103 @@
                                 return label + ': $' + value.toFixed(2);
                             }
                         }
+                    }
+                }
+            }
+        });
+
+        // Expenses by Month (bar chart)
+        const expensesByMonthData = @Html.Raw(Json.Serialize(ViewBag.ExpensesByMonth ?? new object[0]));
+        const monthLabels = expensesByMonthData.map(item => item.month);
+        const monthTotals = expensesByMonthData.map(item => item.total);
+        const ctxMonth = document.getElementById('expensesByMonthChart').getContext('2d');
+        new Chart(ctxMonth, {
+            type: 'bar',
+            data: {
+                labels: monthLabels,
+                datasets: [{
+                    label: 'Total Expenses',
+                    data: monthTotals,
+                    backgroundColor: '#6366f1',
+                    borderRadius: 8,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleColor: '#f8fafc',
+                        bodyColor: '#cbd5e1',
+                        borderColor: '#334155',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return ' $' + context.parsed.y.toFixed(2);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#cbd5e1' },
+                        grid: { color: '#334155' }
+                    },
+                    y: {
+                        ticks: { color: '#cbd5e1' },
+                        grid: { color: '#334155' }
+                    }
+                }
+            }
+        });
+
+        // Monthly Trend (line chart)
+        const ctxTrend = document.getElementById('monthlyTrendChart').getContext('2d');
+        new Chart(ctxTrend, {
+            type: 'line',
+            data: {
+                labels: monthLabels,
+                datasets: [{
+                    label: 'Monthly Trend',
+                    data: monthTotals,
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16,185,129,0.2)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#10b981',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleColor: '#f8fafc',
+                        bodyColor: '#cbd5e1',
+                        borderColor: '#334155',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return ' $' + context.parsed.y.toFixed(2);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#cbd5e1' },
+                        grid: { color: '#334155' }
+                    },
+                    y: {
+                        ticks: { color: '#cbd5e1' },
+                        grid: { color: '#334155' }
                     }
                 }
             }

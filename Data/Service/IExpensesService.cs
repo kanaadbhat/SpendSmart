@@ -1,4 +1,5 @@
-﻿using FinanceApp.Models;
+﻿
+using FinanceApp.Models;
 
 namespace FinanceApp.Data.Service
 {
@@ -14,5 +15,6 @@ namespace FinanceApp.Data.Service
         Task<IEnumerable<Expense>> GetRecentExpensesAsync(int count = 10);
         Task<IEnumerable<object>> GetChartDataAsync();
         Task<IEnumerable<Expense>> SearchExpensesAsync(string searchTerm, DateTime? startDate = null, DateTime? endDate = null, int? categoryId = null);
+        Task<IEnumerable<object>> GetExpensesByMonthAsync(int months = 12);
     }
 }

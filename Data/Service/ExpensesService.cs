@@ -1,4 +1,5 @@
-﻿using FinanceApp.Data;
+﻿
+using FinanceApp.Data;
 using FinanceApp.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +8,29 @@ namespace FinanceApp.Data.Service
     public class ExpensesService : IExpensesService
     {
         private readonly FinanceAppContext _context;
+        public async Task<IEnumerable<object>> GetExpensesByMonthAsync(int months = 12)
+        {
+            var startMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-months + 1);
+            var grouped = await _context.Expenses
+                .Where(e => e.Date >= startMonth)
+                .GroupBy(e => new { e.Date.Year, e.Date.Month })
+                .Select(g => new
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    Total = g.Sum(e => e.Amount)
+                })
+                .OrderBy(g => g.Year).ThenBy(g => g.Month)
+                .ToListAsync();
+
+            var result = grouped.Select(g => new
+            {
+                month = new DateTime(g.Year, g.Month, 1).ToString("MMM yyyy"),
+                total = g.Total
+            }).ToList<object>();
+
+            return result;
+        }
 
         public ExpensesService(FinanceAppContext context)
         {

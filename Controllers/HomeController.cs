@@ -24,7 +24,7 @@ namespace FinanceApp.Controllers
             ViewBag.TotalExpensesThisMonth = await _expensesService.GetTotalExpensesForCurrentMonthAsync();
             ViewBag.RecentExpenses = await _expensesService.GetRecentExpensesAsync(5);
             ViewBag.ChartData = await _expensesService.GetChartDataAsync();
-            
+            ViewBag.ExpensesByMonth = await _expensesService.GetExpensesByMonthAsync(12);
             return View();
         }
 
